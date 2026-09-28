@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISUAL LETTER STUDIO™</title>
+<style>
+:root{
+  --bg:#09090d; --panel:rgba(15,15,20,.78); --panel2:#13131b; --line:rgba(255,255,255,.10);
+  --text:#f5f2eb; --muted:#d8ccb8; --gold:#f1c36b; --gold2:#ffdf9a; --black:#0c0c10;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+.hidden{display:none!important}
+
+#introView{
+  min-height:100vh; position:relative; overflow:hidden;
+  background:
+    linear-gradient(90deg, rgba(5,5,8,.86) 0%, rgba(9,9,12,.74) 42%, rgba(9,9,12,.68) 100%),
+    url("assets/visual-1-65c8d1a4f3.webp") center center / cover no-repeat;
+}
+#introView:before{
+  content:""; position:absolute; inset:0;
+  background:
+   radial-gradient(circle at 72% 20%, rgba(241,195,107,.12), transparent 25%),
+   radial-gradient(circle at 20% 80%, rgba(241,195,107,.08), transparent 22%);
+  pointer-events:none;
+}
+.intro-wrap{position:relative; z-index:2; max-width:1440px; margin:0 auto; min-height:100vh; padding:30px 22px; display:grid; grid-template-columns:1.08fr .92fr; gap:24px; align-items:center}
+.brand{display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap}
+.badge{padding:8px 14px; border:1px solid rgba(241,195,107,.28); border-radius:999px; background:rgba(0,0,0,.22); color:var(--gold2); font-size:12px; font-weight:800; letter-spacing:.7px}
+.brand small{opacity:.92; color:#f4e5c4; letter-spacing:.4px}
+.slide-shell{max-width:760px}
+.kicker{color:var(--gold2); text-transform:uppercase; letter-spacing:1.4px; font-size:12px; font-weight:800; margin-bottom:10px}
+.slide-title{font-size:58px; line-height:.98; margin:0 0 14px; text-shadow:0 10px 35px rgba(0,0,0,.3)}
+.slide-sub{font-size:20px; line-height:1.45; max-width:700px; color:#f4ead8; opacity:.96; margin-bottom:18px}
+.slide-points{display:grid; gap:12px; max-width:640px; margin-bottom:24px}
+.point{padding:14px 16px; border-radius:18px; border:1px solid rgba(255,255,255,.10); background:rgba(11,11,16,.36); backdrop-filter:blur(6px)}
+.point strong{display:block; margin-bottom:4px; color:#fff}
+.point span{color:#e6d9c4; line-height:1.55; font-size:14px}
+.slide-controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.btn{border:0; border-radius:14px; padding:13px 18px; cursor:pointer; font-weight:800}
+.btn-primary{background:linear-gradient(135deg,var(--gold),#c99232); color:#121212}
+.btn-secondary{background:rgba(255,255,255,.06); color:#fff; border:1px solid rgba(255,255,255,.12)}
+.dots{display:flex; gap:8px; margin-left:8px}
+.dot{width:10px; height:10px; border-radius:999px; background:rgba(255,255,255,.22); cursor:pointer}
+.dot.active{background:var(--gold2); box-shadow:0 0 0 4px rgba(241,195,107,.14)}
+
+.auth-card{justify-self:end; width:min(470px,100%); border:1px solid rgba(255,255,255,.10); border-radius:28px; padding:24px; background:rgba(10,10,14,.56); backdrop-filter:blur(16px); box-shadow:0 30px 70px rgba(0,0,0,.25)}
+.auth-card h2{margin:0 0 8px; font-size:32px}
+.auth-card p{margin:0 0 18px; color:#e3d7c5; line-height:1.55}
+.tabs{display:flex; gap:8px; margin-bottom:18px}
+.tab{flex:1; padding:12px 14px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:#e6dfd2; font-weight:800; cursor:pointer}
+.tab.active{background:linear-gradient(135deg,var(--gold),#bf8930); color:#111}
+.form{display:grid; gap:12px}
+.field{display:grid; gap:7px}
+label{font-size:13px; font-weight:800; color:#f2ebdf}
+input,select,textarea{width:100%; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:white; border-radius:14px; padding:13px 14px; outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(241,195,107,.12)}
+.auth-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+.micro{font-size:12px; color:#d6c9b7; line-height:1.55}
+
+#appView{display:none; min-height:100vh; background:linear-gradient(180deg,#09090d,#111117); color:#fff}
+.wrap{max-width:1480px; margin:0 auto; padding:24px}
+.topbar{display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap}
+.topbar h1{margin:8px 0 4px; font-size:36px}
+.topbar p{margin:0; color:#c7c0b8; max-width:900px; line-height:1.6}
+.top-actions{display:flex; gap:10px; flex-wrap:wrap}
+.pill{display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(241,195,107,.08); border:1px solid rgba(241,195,107,.2); color:var(--gold2); font-size:12px; font-weight:800; letter-spacing:.6px}
+
+.layout{display:grid; grid-template-columns:320px 1fr; gap:18px}
+.sidebar{position:sticky; top:18px; align-self:start; border:1px solid var(--line); background:#111117; border-radius:22px; padding:18px}
+.progress{height:8px; background:#232330; border-radius:999px; overflow:hidden; margin:14px 0 8px}
+.progress>div{height:100%; width:0; background:linear-gradient(90deg,var(--gold),#c58c2d)}
+.step{padding:12px; border-radius:14px; margin-bottom:8px; border:1px solid transparent; cursor:pointer}
+.step.active{background:rgba(241,195,107,.08); border-color:rgba(241,195,107,.22)}
+.step small{display:block; color:#c7bca8; margin-top:4px}
+.main{border:1px solid var(--line); background:#0f0f15; border-radius:24px; padding:22px}
+.card{display:none}
+.card.active{display:block}
+.hero{padding:22px; border-radius:20px; border:1px solid rgba(241,195,107,.12); background:linear-gradient(135deg, rgba(241,195,107,.10), rgba(255,255,255,.02)); margin-bottom:18px}
+.hero h2{margin:0 0 8px; font-size:30px}
+.hero p{margin:0; line-height:1.65; color:#ded6ca}
+.lesson{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.box{padding:18px; border-radius:18px; border:1px solid var(--line); background:#14141c}
+.box p,.box li{line-height:1.65; color:#ddd5ca}
+.box h3{margin:0 0 10px}
+.tip{padding:14px; border-radius:14px; background:rgba(241,195,107,.08); border:1px solid rgba(241,195,107,.16); color:#f1e4cf; margin-top:12px; line-height:1.55}
+.grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+.field.full{grid-column:1/-1}
+textarea{min-height:100px; resize:vertical}
+.choices{display:flex; flex-wrap:wrap; gap:8px}
+.choice{padding:10px 12px; border-radius:999px; border:1px solid #373743; background:#1a1a22; color:#efe7db; cursor:pointer; font-size:13px}
+.choice.on{border-color:rgba(241,195,107,.4); background:rgba(241,195,107,.12)}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:20px}
+.output{white-space:pre-wrap; min-height:160px; padding:16px; border-radius:16px; border:1px solid var(--line); background:#09090d; line-height:1.65}
+.preview{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.preview > div{min-height:96px; border-radius:16px; border:1px solid var(--line); background:#15151d; padding:12px}
+.preview strong{display:block; margin-bottom:4px}
+.row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+.custom-field{display:none; margin-top:8px}
+.footer{margin-top:16px; color:#c7bca8; font-size:12px; line-height:1.55}
+
+@media (max-width:1100px){
+  .intro-wrap{grid-template-columns:1fr; padding-top:24px; padding-bottom:24px}
+  .slide-title{font-size:44px}
+  .auth-card{justify-self:stretch}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .lesson{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .slide-title{font-size:36px}
+  .slide-sub{font-size:18px}
+  .grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .preview{grid-template-columns:1fr}
+}
+
+.dashboard-cover{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
+.cover-panel{padding:18px;border-radius:20px;border:1px solid var(--line);background:#14141c}
+.cover-panel h3{margin:0 0 10px}
+.cover-panel p,.cover-panel li{line-height:1.65;color:#ddd5ca}
+.cover-visual{width:100%;display:block;border-radius:18px;border:1px solid rgba(241,195,107,.18);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.cover-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+@media (max-width:1100px){.dashboard-cover{grid-template-columns:1fr}}
+
+
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mode-card{padding:18px;border-radius:18px;border:1px solid var(--line);background:#14141c;cursor:pointer;transition:.2s ease}
+.mode-card.active{border-color:rgba(241,195,107,.38);box-shadow:0 0 0 2px rgba(241,195,107,.12) inset;background:linear-gradient(135deg, rgba(241,195,107,.09), rgba(255,255,255,.02))}
+.mode-card h4{margin:0 0 8px;font-size:22px}
+.mode-card p{margin:0;color:#ddd5ca;line-height:1.6}
+.mode-badge{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(241,195,107,.09);border:1px solid rgba(241,195,107,.18);color:#f1e4cf;font-size:12px;font-weight:800;margin-bottom:12px}
+.mode-note{margin-top:14px}
+.library-group-title{margin:14px 0 8px;font-size:13px;color:#f1e4cf;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.choice.small{font-size:12px;padding:8px 10px}
+.choice[data-set]{user-select:none}
+
+
+#introView {
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  background:#09090d;
+}
+.intro-simple-bg {
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg, rgba(7,7,10,.78) 0%, rgba(7,7,10,.42) 45%, rgba(7,7,10,.64) 100%),
+    url("assets/visual-2-b62eb9ac0d.webp") center center / cover no-repeat;
+}
+.intro-simple-overlay {
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 70% 18%, rgba(241,195,107,.10), transparent 25%),
+    radial-gradient(circle at 18% 82%, rgba(241,195,107,.08), transparent 22%);
+  pointer-events:none;
+}
+.intro-simple-wrap {
+  position:relative;
+  z-index:2;
+  max-width:1440px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:34px 22px;
+  display:grid;
+  grid-template-columns:1fr minmax(340px, 470px);
+  align-items:center;
+  gap:28px;
+}
+.intro-simple-title {
+  align-self:start;
+  padding-top:18px;
+}
+.intro-simple-title h1 {
+  margin:0;
+  font-size:62px;
+  line-height:1;
+  color:#fff;
+  text-shadow:0 12px 35px rgba(0,0,0,.35);
+}
+.auth-card-simple {
+  justify-self:end;
+}
+.forgot-link {
+  border:0;
+  background:transparent;
+  color:#e8d7b5;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+  padding:0;
+}
+.forgot-link:hover {
+  color:#fff2d0;
+  text-decoration:underline;
+}
+@media (max-width:1100px){
+  .intro-simple-wrap {
+    grid-template-columns:1fr;
+    align-items:end;
+  }
+  .intro-simple-title {
+    align-self:start;
+    padding-top:0;
+  }
+  .intro-simple-title h1 {
+    font-size:42px;
+  }
+  .auth-card-simple {
+    justify-self:stretch;
+  }
+}
+
+
+.auth-message{
+  margin:14px 0;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:#f4ead8;
+  line-height:1.5;
+  font-size:13px;
+}
+.auth-message[data-type="success"]{
+  border-color:rgba(75,190,130,.35);
+  background:rgba(75,190,130,.10);
+}
+.auth-message[data-type="error"]{
+  border-color:rgba(220,90,90,.38);
+  background:rgba(220,90,90,.10);
+}
+
+</style>
+</head>
+<body>
+
+
+<section id="introView">
+  <div class="intro-simple-bg"></div>
+  <div class="intro-simple-overlay"></div>
+  <div class="intro-simple-wrap">
+    <div class="intro-simple-title">
+      <h1>Visual Letter Studio™</h1>
+    </div>
+
+    <div class="auth-card auth-card-simple">
+      <h2>Entrar al Studio</h2>
+
+      <div class="tabs">
+        <button class="tab active" id="showLogin">Iniciar sesión</button>
+        <button class="tab" id="showRegister">Registrarse</button>
+      </div>
+
+      <div id="loginPane">
+        <div class="form">
+          <div class="field">
+            <label>Correo</label>
+            <input type="email" id="loginEmail" placeholder="tuemail@ejemplo.com">
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" id="loginPassword" placeholder="********">
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:-4px">
+            <button type="button" class="forgot-link" id="forgotPasswordBtn">Olvidé mi contraseña</button>
+          </div>
+          <div class="auth-actions">
+            <button class="btn btn-primary" id="loginBtn">Entrar al Studio</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="authMessage" class="auth-message" style="display:none" role="status" aria-live="polite"></div>
+
+      <div id="registerPane" class="hidden">
+        <div class="form">
+          <div class="field">
+            <label>Nombre</label>
+            <input type="text" id="registerName" placeholder="Tu nombre">
+          </div>
+          <div class="field">
+            <label>Correo</label>
+            <input type="email" id="registerEmail" placeholder="tuemail@ejemplo.com">
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" id="registerPassword" placeholder="Crea una contraseña">
+          </div>
+          <div class="auth-actions">
+            <button class="btn btn-primary" id="registerBtn">Crear cuenta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="appView">
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <span class="pill">VISUAL LETTER STUDIO™</span>
+        <h1>Laboratorio interactivo de letras temáticas</h1>
+        <p>Diseña tu concepto. Construye tus letras. Genera tu prompt. La herramienta es la formación: la alumna aprende mientras decide y el sistema traduce todo a un prompt profesional listo para ChatGPT.</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-secondary" onclick="quickPreset('luxury')">Preset lujo</button>
+        <button class="btn btn-secondary" onclick="quickPreset('tulum')">Preset Tulum</button>
+        <button class="btn btn-secondary" onclick="quickPreset('neon')">Preset neón</button>
+        <button class="btn btn-secondary" onclick="saveProject()">Guardar</button>
+        <button class="btn btn-secondary" onclick="loadProject()">Recuperar</button>
+        <button class="btn btn-primary" onclick="logout()">Salir</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <strong>Ruta creativa</strong>
+        <div class="progress"><div id="bar"></div></div>
+        <div id="progressText" class="micro">Paso 1 de 7</div>
+        <div id="steps" style="margin-top:12px"></div>
+      </aside>
+
+      <main class="main">
+
+        <section class="card active">
+          <div class="hero"><h2>1. Bienvenida al dashboard</h2><p>Esta es la portada visual de <strong>Visual Letter Studio™</strong>. Desde aquí las alumnas entienden hacia dónde van antes de empezar a construir sus prompts dentro del Studio.</p></div>
+          <div class="dashboard-cover">
+            <div class="cover-panel">
+              <img class="cover-visual" src="assets/visual-3-5033bdaf6b.webp" alt="Portada Visual Letter Studio">
+            </div>
+            <div class="cover-panel">
+              <h3>Qué van a encontrar aquí</h3>
+              <p><strong>Visual Letter Studio™</strong> es un laboratorio interactivo de letras temáticas. Aquí no trabajan desde una plantilla cerrada: exploran opciones, combinan estilos y construyen un prompt profesional paso a paso.</p>
+              <div class="tip">La alumna puede crear desde cero o usar una foto base para añadirle letras temáticas y composición visual.</div>
+              <h3 style="margin-top:18px">Cómo usarlo</h3>
+              <ul>
+                <li><strong>Regístrate</strong> para entrar al Studio.</li>
+                <li><strong>Elige tu modo de creación:</strong> desde cero o usando una foto.</li>
+                <li><strong>Explora la biblioteca creativa</strong> de temáticas, materiales, mundos visuales, luces y acabados.</li>
+                <li><strong>Genera tu prompt</strong> y llévalo a ChatGPT para crear la imagen.</li>
+              </ul>
+              <div class="cover-actions">
+                <button class="btn btn-primary" onclick="next()">Empezar el recorrido</button>
+                <button class="btn btn-secondary" onclick="go(8)">Ir al prompt final</button>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><span></span><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>2. Elige tu modo de creación</h2><p>Antes de construir el prompt, la alumna decide si quiere crear toda la imagen desde cero o si va a usar una foto como base para añadirle las letras temáticas.</p></div>
+          <div class="lesson">
+            <div class="box">
+              <h3>Selecciona cómo vas a trabajar</h3>
+              <div class="mode-grid">
+                <div class="mode-card active" id="modeScratchCard" onclick="setCreationMode('scratch')">
+                  <span class="mode-badge">CREAR DESDE CERO</span>
+                  <h4>Construir toda la imagen</h4>
+                  <p>Ideal si quieres que ChatGPT genere toda la escena completa: el universo visual, las letras, la composición y el ambiente desde cero.</p>
+                </div>
+                <div class="mode-card" id="modePhotoCard" onclick="setCreationMode('photo')">
+                  <span class="mode-badge">USAR UNA FOTO</span>
+                  <h4>Trabajar sobre una imagen base</h4>
+                  <p>Ideal si ya tienes una foto y quieres agregarle lettering temático. El prompt final te recordará que debes subir la imagen junto con el prompt en ChatGPT.</p>
+                </div>
+              </div>
+              <input type="hidden" id="creationMode" value="scratch">
+              <div class="tip mode-note" id="creationModeTip"><strong>Modo actual:</strong> Crear desde cero. El Studio construirá un prompt para generar toda la pieza completa.</div>
+            </div>
+            <div class="box">
+              <h3>Qué cambia según la opción</h3>
+              <ul>
+                <li><strong>Crear desde cero:</strong> solo necesitarás copiar el prompt final y llevarlo a ChatGPT.</li>
+                <li><strong>Usar una foto:</strong> además del prompt final, tendrás que subir la imagen que quieres usar como base.</li>
+                <li><strong>Ambas opciones</strong> usan la misma biblioteca de temáticas, materiales, luces, composición y estilo.</li>
+              </ul>
+              <div class="tip">Esto les da claridad a las muchachas desde el principio: pueden entrar a crear una imagen completa o mejorar una foto que ya tengan.</div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>3. Intención</h2><p>Primero defines qué debe hacer sentir la pieza. Una letra temática no empieza por el material: empieza por la emoción y por el propósito.</p></div>
+          <div class="lesson">
+            <div class="box">
+              <h3>Qué aprendes aquí</h3>
+              <p>La tipografía temática convierte el texto en un objeto visual con personalidad, materia, profundidad y narrativa. La palabra no solo se lee: también se siente.</p>
+              <div class="tip">Regla VCC: primero intención, después estética.</div>
+            </div>
+            <div class="box">
+              <h3>Construye la intención</h3>
+              <div class="grid">
+                <div class="field"><label>Texto principal</label><input id="mainText" placeholder="Ej. Visual Letter Studio"></div>
+                <div class="field"><label>Texto secundario</label><input id="secondaryText" placeholder="Ej. Laboratorio interactivo de letras temáticas"></div>
+                <div class="field full"><label>Emoción / intención</label>
+                  <select id="emotion">
+                    <option value="">Elige una emoción...</option>
+                    <option>Exclusividad</option><option>Poder</option><option>Elegancia</option><option>Misterio</option><option>Frescura</option><option>Romanticismo</option><option>Fantasía</option><option>Impacto</option><option>Calma</option><option>Modernidad</option><option>Lujo natural</option><option>Diversión</option><option value="custom">Otra / personalizada</option>
+                  </select>
+                  <input id="emotionCustom" class="custom-field" placeholder="Escribe tu emoción o mezcla">
+                </div>
+                <div class="field full"><label>Propósito</label>
+                  <select id="purpose">
+                    <option>Portada o flyer</option><option>Campaña de marca</option><option>Contenido para redes</option><option>Identidad visual</option><option>Evento temático</option><option>Presentación</option><option>Otro</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><span></span><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>4. Universo visual</h2><p>Aquí eliges el mundo donde viven tus letras. La alumna no tiene que saber inventarlo todo: la biblioteca la guía.</p></div>
+          <div class="lesson">
+            <div class="box"><h3>Piensa como directora creativa</h3><p>Una misma palabra puede vivir en un resort tropical, un palacio futurista, una pasarela editorial, una galaxia dorada o un universo botánico.</p><div class="tip">Puedes combinar mundos si quieres crear una dirección más original.</div></div>
+            <div class="box">
+              <h3>Biblioteca de mundos</h3>
+              <div class="library-group-title">Temáticas populares</div>
+              <div class="choices">
+                <span class="choice small" data-set="world" data-value="Botánico sofisticado">Flores</span>
+                <span class="choice small" data-set="world-custom" data-value="Estrellas, brillo celestial y universo nocturno">Estrellas</span>
+                <span class="choice small" data-set="world" data-value="Lujo tropical orgánico">Tropical</span>
+                <span class="choice small" data-set="world" data-value="Marino / acuático">Océano</span>
+                <span class="choice small" data-set="world-custom" data-value="Fuego intenso, chispas y energía volcánica">Fuego</span>
+                <span class="choice small" data-set="world" data-value="Invierno / hielo">Hielo</span>
+                <span class="choice small" data-set="world" data-value="Celestial / cósmico">Cósmico</span>
+                <span class="choice small" data-set="world-custom" data-value="Romántico floral, suave y emocional">Romántico</span>
+                <span class="choice small" data-set="world" data-value="Editorial de moda">Editorial</span>
+                <span class="choice small" data-set="world-custom" data-value="Vintage elegante con nostalgia visual">Vintage</span>
+                <span class="choice small" data-set="world-custom" data-value="Noir urbano, sofisticado y contemporáneo">Urbano</span>
+                <span class="choice small" data-set="world-custom" data-value="Fantástico mágico con brillos y criaturas suaves">Mágico</span>
+                <span class="choice small" data-set="world" data-value="Infantil mágico">Infantil</span>
+                <span class="choice small" data-set="world-custom" data-value="Navidad cálida con luces, nieve y magia">Navidad</span>
+                <span class="choice small" data-set="world-custom" data-value="Halloween chic con calabazas, misterio y noche">Halloween</span>
+                <span class="choice small" data-set="world-custom" data-value="San Valentín romántico, floral y brillante">San Valentín</span>
+                <span class="choice small" data-set="world-custom" data-value="Verano radiante con sol, color y ligereza">Verano</span>
+                <span class="choice small" data-set="world" data-value="Otoño cálido">Otoño</span>
+                <span class="choice small" data-set="world" data-value="Primavera floral">Primavera</span>
+                <span class="choice small" data-set="world-custom" data-value="Tulum luxury resort con piedra, palmeras y atmósfera editorial">Tulum</span>
+                <span class="choice small" data-set="world-custom" data-value="Boda elegante, romántica y luminosa">Wedding</span>
+                <span class="choice small" data-set="world-custom" data-value="Food styling premium y apetecible">Food</span>
+                <span class="choice small" data-set="world-custom" data-value="Fashion luxury con pasarela, brillo y editorial">Fashion</span>
+                <span class="choice small" data-set="world-custom" data-value="Tech futurista, limpio y sofisticado">Tech</span>
+              </div>
+              <div class="grid">
+                <div class="field full"><label>Universo visual</label>
+                  <select id="world">
+                    <option value="">Elige un universo visual...</option>
+                    <option>Lujo tropical orgánico</option><option>Editorial de moda</option><option>Futurista tecnológico</option><option>Mitológico / ancestral</option><option>Botánico sofisticado</option><option>Nocturno de lujo</option><option>Marino / acuático</option><option>Celestial / cósmico</option><option>Minimalista arquitectónico</option><option>Festivo / celebración</option><option>Gastronómico premium</option><option>Infantil mágico</option><option>Urbano contemporáneo</option><option>Desierto editorial</option><option>Invierno / hielo</option><option>Otoño cálido</option><option>Primavera floral</option><option>Verano mediterráneo</option><option value="custom">Crear mi propio universo</option>
+                  </select>
+                  <textarea id="worldCustom" class="custom-field" placeholder="Describe tu universo visual"></textarea>
+                </div>
+                <div class="field"><label>Elementos que sí deben aparecer</label><input id="worldElements" placeholder="Ej. palmeras, piedra, agua, cristales..."></div>
+                <div class="field"><label>Evitar</label><input id="avoidWorld" placeholder="Ej. saturado, caricaturesco, caótico..."></div>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>5. Materialidad de las letras</h2><p>Selecciona o inventa la materia. La biblioteca te ayuda, pero también puedes crear combinaciones propias.</p></div>
+          <div class="lesson">
+            <div class="box"><h3>Materia + textura + comportamiento</h3><p>No basta con decir “oro” o “vidrio”. Una buena dirección visual también define acabado, textura y cómo se comporta el material frente a la luz.</p><div class="tip">La alumna puede usar la biblioteca o crear un material totalmente nuevo.</div></div>
+            <div class="box">
+              <h3>Biblioteca de materiales</h3>
+              <div class="library-group-title">Materiales sugeridos</div>
+              <div class="choices">
+                <span class="choice small" data-set="material" data-value="Flores">Flores</span>
+                <span class="choice small" data-set="material-custom" data-value="estrellas luminosas y polvo cósmico">Estrellas</span>
+                <span class="choice small" data-set="material" data-value="Oro">Oro</span>
+                <span class="choice small" data-set="material" data-value="Oro rosa">Oro rosa</span>
+                <span class="choice small" data-set="material" data-value="Plata">Plata</span>
+                <span class="choice small" data-set="material" data-value="Metal cromado">Cromo</span>
+                <span class="choice small" data-set="material" data-value="Vidrio">Vidrio</span>
+                <span class="choice small" data-set="material" data-value="Cristal">Cristal</span>
+                <span class="choice small" data-set="material" data-value="Piedra tallada">Piedra</span>
+                <span class="choice small" data-set="material" data-value="Mármol">Mármol</span>
+                <span class="choice small" data-set="material" data-value="Madera">Madera</span>
+                <span class="choice small" data-set="material" data-value="Tela">Tela</span>
+                <span class="choice small" data-set="material" data-value="Seda">Seda</span>
+                <span class="choice small" data-set="material" data-value="Terciopelo">Terciopelo</span>
+                <span class="choice small" data-set="material" data-value="Agua">Agua</span>
+                <span class="choice small" data-set="material" data-value="Hielo">Hielo</span>
+                <span class="choice small" data-set="material" data-value="Humo">Humo</span>
+                <span class="choice small" data-set="material" data-value="Fuego">Fuego</span>
+                <span class="choice small" data-set="material" data-value="Resina">Resina</span>
+                <span class="choice small" data-set="material" data-value="Chocolate">Chocolate</span>
+                <span class="choice small" data-set="material" data-value="Caramelo">Caramelo</span>
+                <span class="choice small" data-set="material" data-value="Hojas">Hojas</span>
+                <span class="choice small" data-set="material" data-value="Neón">Neón</span>
+              </div>
+              <div class="grid">
+                <div class="field"><label>Material base</label>
+                  <select id="material">
+                    <option value="">Elige un material...</option>
+                    <option>Piedra tallada</option><option>Mármol</option><option>Vidrio</option><option>Cristal</option><option>Metal cromado</option><option>Oro</option><option>Oro rosa</option><option>Plata</option><option>Agua</option><option>Hielo</option><option>Humo</option><option>Fuego</option><option>Madera</option><option>Tela</option><option>Seda</option><option>Terciopelo</option><option>Flores</option><option>Hojas</option><option>Chocolate</option><option>Caramelo</option><option>Bebida / líquido</option><option>Neón</option><option>Resina</option><option>Arcilla</option><option value="custom">Material personalizado</option>
+                  </select>
+                  <input id="materialCustom" class="custom-field" placeholder="Describe tu material">
+                </div>
+                <div class="field"><label>Acabado</label>
+                  <select id="finish">
+                    <option value="">Elige un acabado...</option>
+                    <option>Pulido espejo</option><option>Glossy brillante</option><option>Mate</option><option>Satinado</option><option>Metálico reflectante</option><option>Translúcido</option><option>Opaco</option><option>Poroso</option><option>Envejecido</option><option>Escarchado</option><option>Húmedo</option><option>Perlado</option><option>Iridescente</option><option value="custom">Personalizado</option>
+                  </select>
+                  <input id="finishCustom" class="custom-field" placeholder="Describe el acabado">
+                </div>
+                <div class="field"><label>Textura</label>
+                  <select id="texture">
+                    <option value="">Elige una textura...</option>
+                    <option>Tallado</option><option>Vetas naturales</option><option>Grietas finas</option><option>Burbujas</option><option>Condensación</option><option>Relieve orgánico</option><option>Granulado</option><option>Superficie lisa</option><option>Pliegues textiles</option><option>Microcristales</option><option>Partículas incrustadas</option><option>Textura líquida</option><option value="custom">Personalizada</option>
+                  </select>
+                  <input id="textureCustom" class="custom-field" placeholder="Describe la textura">
+                </div>
+                <div class="field"><label>Comportamiento</label>
+                  <select id="behavior">
+                    <option value="">Elige cómo se comporta...</option>
+                    <option>Flota en el espacio</option><option>Emite luz propia</option><option>Se derrite suavemente</option><option>Parece tallado en el entorno</option><option>Se integra con la arquitectura</option><option>Refleja el ambiente</option><option>Es translúcido</option><option>Tiene partículas flotantes</option><option>Parece líquido congelado</option><option>Se forma con elementos naturales</option><option>Está suspendido con profundidad</option><option value="custom">Comportamiento personalizado</option>
+                  </select>
+                  <input id="behaviorCustom" class="custom-field" placeholder="Describe el comportamiento">
+                </div>
+                <div class="field full"><label>Combinación libre / material inventado</label><textarea id="customMaterial" placeholder="Ej. cristal ahumado con bordes de oro líquido y partículas de luz"></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>6. Composición y encuadre</h2><p>Aquí se decide dónde viven las letras dentro de la imagen y cómo conviven con el sujeto o el producto.</p></div>
+          <div class="lesson">
+            <div class="box"><h3>Protección de la composición</h3><p>Si hay una persona o producto, las letras no deben arruinar la jerarquía visual. Por eso este paso es tan importante.</p><div class="tip">Usa espacio negativo y protege rostro, cuerpo o producto cuando haga falta.</div></div>
+            <div class="box">
+              <h3>Biblioteca de composición</h3>
+              <div class="grid">
+                <div class="field"><label>Formato</label><select id="ratio"><option>9:16 vertical</option><option>1:1 cuadrado</option><option>4:5 social</option><option>16:9 horizontal</option></select></div>
+                <div class="field"><label>Cámara / encuadre</label>
+                  <select id="camera">
+                    <option value="">Elige cámara / encuadre...</option>
+                    <option>Editorial frontal</option><option>Primer plano</option><option>Plano medio</option><option>Plano general</option><option>Contrapicado suave</option><option>Picado suave</option><option>Vista lateral</option><option>Perspectiva cinematográfica</option><option>Macro detalle</option><option>Composición de campaña</option><option value="custom">Personalizado</option>
+                  </select>
+                  <input id="cameraCustom" class="custom-field" placeholder="Describe tu encuadre">
+                </div>
+                <div class="field"><label>Ubicación de las letras</label>
+                  <select id="placement">
+                    <option value="">Elige ubicación...</option>
+                    <option>Lado izquierdo</option><option>Lado derecho</option><option>Centro</option><option>Parte superior</option><option>Parte inferior</option><option>Fondo detrás del sujeto</option><option>Foreground delante del sujeto sin cubrirlo</option><option>Integrado en arquitectura</option><option>Espacio negativo disponible</option><option>En diagonal</option><option value="custom">Personalizada</option>
+                  </select>
+                  <input id="placementCustom" class="custom-field" placeholder="Describe la ubicación">
+                </div>
+                <div class="field"><label>Profundidad</label>
+                  <select id="depth">
+                    <option value="">Elige profundidad...</option>
+                    <option>Plano único limpio</option><option>Foreground + midground + background</option><option>Texto en primer plano</option><option>Texto en plano medio</option><option>Texto al fondo</option><option>Profundidad cinematográfica</option><option>Capas editoriales</option><option value="custom">Personalizada</option>
+                  </select>
+                  <input id="depthCustom" class="custom-field" placeholder="Describe la profundidad">
+                </div>
+                <div class="field full"><label>Reglas de protección</label><textarea id="protection" placeholder="Ej. usar espacio vacío, no cubrir rostro o producto, mantener lectura clara"></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>7. Color, luz y acabado final</h2><p>Este paso convierte la idea en una pieza premium, editorial, comercial o cinematográfica.</p></div>
+          <div class="lesson">
+            <div class="box"><h3>Dirección visual</h3><p>La misma letra cambia por completo según la paleta, la temperatura de luz, el contraste y el acabado final.</p><div class="tip">No tienes que saber teoría: elige de la biblioteca y el sistema traduce la decisión.</div></div>
+            <div class="box">
+              <h3>Biblioteca visual</h3>
+              <div class="grid">
+                <div class="field"><label>Paleta</label>
+                  <select id="palette">
+                    <option value="">Elige una paleta...</option>
+                    <option>Negro + oro</option><option>Negro + blanco + vino tinto</option><option>Beige + arena + oro suave</option><option>Rosa palo + oro rosa</option><option>Blanco + plata + azul hielo</option><option>Verde oliva + crema + dorado</option><option>Rojo profundo + negro</option><option>Azul eléctrico + violeta + negro</option><option>Pasteles suaves</option><option>Tropical saturado</option><option>Tonos tierra</option><option>Monocromática</option><option>Neón multicolor</option><option value="custom">Paleta personalizada</option>
+                  </select>
+                  <input id="paletteCustom" class="custom-field" placeholder="Describe tu paleta">
+                </div>
+                <div class="field"><label>Iluminación</label>
+                  <select id="lighting">
+                    <option value="">Elige iluminación...</option>
+                    <option>Golden hour</option><option>Estudio glossy</option><option>Luz cinematográfica dramática</option><option>Luz suave difusa</option><option>Luz lateral rasante</option><option>Contraluz</option><option>Neón nocturno</option><option>Luz cálida editorial</option><option>Luz fría futurista</option><option>Spotlight de lujo</option><option>High key</option><option>Low key</option><option value="custom">Iluminación personalizada</option>
+                  </select>
+                  <input id="lightingCustom" class="custom-field" placeholder="Describe la iluminación">
+                </div>
+                <div class="field"><label>Contraste</label>
+                  <select id="contrast">
+                    <option value="">Elige contraste...</option>
+                    <option>Suave</option><option>Medio</option><option>Alto</option><option>Cinematográfico</option><option>Editorial limpio</option><option>Dramático</option><option>Etéreo</option><option value="custom">Personalizado</option>
+                  </select>
+                  <input id="contrastCustom" class="custom-field" placeholder="Describe el contraste">
+                </div>
+                <div class="field"><label>Acabado final</label>
+                  <select id="finalLook">
+                    <option value="">Elige acabado final...</option>
+                    <option>Editorial premium</option><option>Campaña de lujo</option><option>Publicidad comercial glossy</option><option>Cinematográfico</option><option>Moda high-end</option><option>Minimalista sofisticado</option><option>Surrealista elegante</option><option>Futurista premium</option><option>Orgánico artesanal</option><option>Social media impactante</option><option>Portada de revista</option><option value="custom">Personalizado</option>
+                  </select>
+                  <input id="finalLookCustom" class="custom-field" placeholder="Describe el acabado final">
+                </div>
+                <div class="field full"><label>Efectos atmosféricos</label>
+                  <select id="effects">
+                    <option value="">Elige efectos...</option>
+                    <option>Sin efectos extra</option><option>Haze suave</option><option>Partículas flotantes</option><option>Niebla</option><option>Destellos</option><option>Condensación</option><option>Burbujas</option><option>Glow sutil</option><option>Reflejos húmedos</option><option>Polvo luminoso</option><option>Chispas</option><option>Profundidad atmosférica</option><option value="custom">Efectos personalizados</option>
+                  </select>
+                  <input id="effectsCustom" class="custom-field" placeholder="Describe los efectos">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>8. Candados de precisión</h2><p>Aquí se define lo que la IA no puede cambiar. Este paso vuelve profesional el prompt.</p></div>
+          <div class="lesson">
+            <div class="box"><h3>Control</h3><p>La IA puede inventar letras, tapar elementos o cambiar el balance visual. Por eso añadimos restricciones claras.</p><div class="tip">Candado esencial: texto exacto, legibilidad total y cero letras inventadas.</div></div>
+            <div class="box">
+              <h3>Selecciona tus candados</h3>
+              <div class="choices" id="locks">
+                <span class="choice on">Texto exacto</span>
+                <span class="choice on">Sin letras extra</span>
+                <span class="choice on">Legibilidad total</span>
+                <span class="choice on">No cubrir rostro</span>
+                <span class="choice">No cubrir producto</span>
+                <span class="choice">No cambiar cuerpo</span>
+                <span class="choice">No cambiar vestuario</span>
+                <span class="choice">Mantener proporciones</span>
+                <span class="choice">Sin perspectiva extrema</span>
+              </div>
+              <div class="field" style="margin-top:14px"><label>Candados personalizados</label><textarea id="customLocks" placeholder="Escribe restricciones adicionales"></textarea></div>
+            </div>
+          </div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="buildPrompt(); next()">Generar mi prompt</button></div>
+        </section>
+
+        <section class="card">
+          <div class="hero"><h2>9. Prompt final</h2><p>Este es el resultado de todas las decisiones tomadas dentro del Studio.</p></div>
+          <div class="preview">
+            <div><strong>Concepto</strong><span id="sumConcept"></span></div>
+            <div><strong>Materia</strong><span id="sumMaterial"></span></div>
+            <div><strong>Dirección</strong><span id="sumDirection"></span></div>
+          </div>
+          <div style="height:16px"></div>
+          <h3>Prompt maestro</h3>
+          <div id="masterOutput" class="output"></div>
+          <div class="row">
+            <button class="btn btn-primary" onclick="copyText('masterOutput')">Copiar prompt</button>
+            <button class="btn btn-secondary" onclick="buildPrompt()">Regenerar</button>
+            <button class="btn btn-secondary" onclick="downloadPrompt()">Descargar .txt</button>
+          </div>
+          <div style="height:20px"></div>
+          <h3>Prompt corto</h3>
+          <div id="shortOutput" class="output" style="min-height:110px"></div>
+          <div class="row"><button class="btn btn-primary" onclick="copyText('shortOutput')">Copiar versión corta</button></div>
+          <div class="tip">Pega tu prompt en ChatGPT y, si algo no queda bien, corrige una sola variable a la vez: material, ubicación, iluminación o relación con el sujeto.</div>
+          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="resetAll()">Crear otra composición</button></div>
+        </section>
+
+        <div class="footer">VISUAL LETTER STUDIO™ · Laboratorio interactivo de letras temáticas · Prototipo con slides de entrada + constructor guiado.</div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+}; dots.appendChild(dot); });
+}
+document.getElementById('prevSlideBtn').onclick=()=>{slideIndex=(slideIndex-1+slides.length)%slides.length; renderSlide();};
+document.getElementById('nextSlideBtn').onclick=()=>{slideIndex=(slideIndex+1)%slides.length; renderSlide();};
+renderSlide();
+
+
+// --- NETLIFY IDENTITY REAL AUTH ---
+let identityApi = null;
+let recoveryMode = false;
+
+function showAuthMessage(message, type='info'){
+  const box = document.getElementById('authMessage');
+  if(!box) return;
+  box.textContent = message || '';
+  box.style.display = message ? 'block' : 'none';
+  box.dataset.type = type;
+}
+
+function showResetPane(){
+  recoveryMode = true;
+  document.getElementById('loginPane')?.classList.add('hidden');
+  document.getElementById('registerPane')?.classList.add('hidden');
+  document.getElementById('resetPane')?.classList.remove('hidden');
+  document.getElementById('showLogin')?.classList.remove('active');
+  document.getElementById('showRegister')?.classList.remove('active');
+  showAuthMessage('Crea tu nueva contraseña para completar la recuperación.', 'info');
+}
+
+function hideResetPane(){
+  recoveryMode = false;
+  document.getElementById('resetPane')?.classList.add('hidden');
+}
+
+async function initIdentity(){
+  try{
+    const mod = await import('@netlify/identity');
+    identityApi = mod;
+
+    const callback = await mod.handleAuthCallback();
+    if(callback?.type === 'recovery'){
+      showResetPane();
+      return;
+    }
+
+    const user = await mod.getUser();
+    if(user){
+      enterStudio();
+    }
+  }catch(err){
+    console.error('Identity init error', err);
+    showAuthMessage(
+      'El acceso real se activa cuando esta web esté publicada en Netlify con Identity habilitado.',
+      'info'
+    );
+  }
+}
+
+const showLogin=document.getElementById('showLogin');
+const showRegister=document.getElementById('showRegister');
+const loginPane=document.getElementById('loginPane');
+const registerPane=document.getElementById('registerPane');
+
+showLogin.onclick=()=>{
+  hideResetPane();
+  showLogin.classList.add('active');
+  showRegister.classList.remove('active');
+  loginPane.classList.remove('hidden');
+  registerPane.classList.add('hidden');
+  showAuthMessage('');
+};
+
+showRegister.onclick=()=>{
+  hideResetPane();
+  showRegister.classList.add('active');
+  showLogin.classList.remove('active');
+  registerPane.classList.remove('hidden');
+  loginPane.classList.add('hidden');
+  showAuthMessage('');
+};
+
+document.getElementById('registerBtn').onclick=async()=>{
+  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
+  const name=document.getElementById('registerName').value.trim();
+  const email=document.getElementById('registerEmail').value.trim().toLowerCase();
+  const password=document.getElementById('registerPassword').value.trim();
+
+  if(!name || !email || !password){
+    return showAuthMessage('Completa nombre, correo y contraseña.', 'error');
+  }
+
+  try{
+    await identityApi.signup(email, password, { full_name:name });
+    showAuthMessage(
+      'Registro creado. Revisa tu correo y confirma tu cuenta para poder entrar al Studio.',
+      'success'
+    );
+    showLogin.click();
+    document.getElementById('loginEmail').value=email;
+  }catch(err){
+    showAuthMessage(err?.message || 'No se pudo completar el registro.', 'error');
+  }
+};
+
+document.getElementById('loginBtn').onclick=async()=>{
+  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password=document.getElementById('loginPassword').value.trim();
+
+  if(!email || !password){
+    return showAuthMessage('Escribe tu correo y contraseña.', 'error');
+  }
+
+  try{
+    await identityApi.login(email, password);
+    showAuthMessage('');
+    enterStudio();
+  }catch(err){
+    showAuthMessage(err?.message || 'Correo o contraseña incorrectos.', 'error');
+  }
+};
+
+document.getElementById('forgotPasswordBtn').onclick=async()=>{
+  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
+  let email=(document.getElementById('loginEmail').value || '').trim().toLowerCase();
+
+  if(!email){
+    email=(window.prompt('Escribe el correo de tu cuenta:','') || '').trim().toLowerCase();
+  }
+  if(!email) return;
+
+  try{
+    await identityApi.requestPasswordRecovery(email);
+    showAuthMessage(
+      'Te enviamos un enlace de recuperación. Revisa tu correo y vuelve al Studio desde ese enlace.',
+      'success'
+    );
+  }catch(err){
+    showAuthMessage(err?.message || 'No se pudo enviar el correo de recuperación.', 'error');
+  }
+};
+
+document.getElementById('resetPasswordBtn').onclick=async()=>{
+  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
+  const pass=document.getElementById('newPassword').value.trim();
+  const pass2=document.getElementById('confirmNewPassword').value.trim();
+
+  if(!pass || pass.length < 8){
+    return showAuthMessage('La nueva contraseña debe tener al menos 8 caracteres.', 'error');
+  }
+  if(pass !== pass2){
+    return showAuthMessage('Las dos contraseñas no coinciden.', 'error');
+  }
+
+  try{
+    await identityApi.updateUser({ password:pass });
+    showAuthMessage('Contraseña actualizada. Ya puedes entrar al Studio.', 'success');
+    hideResetPane();
+    enterStudio();
+  }catch(err){
+    showAuthMessage(err?.message || 'No se pudo actualizar la contraseña.', 'error');
+  }
+};
+
+function enterStudio(){
+  document.getElementById('introView').style.display='none';
+  document.getElementById('appView').style.display='block';
+}
+
+async function logout(){
+  try{
+    if(identityApi) await identityApi.logout();
+  }catch(err){
+    console.error(err);
+  }
+  document.getElementById('appView').style.display='none';
+  document.getElementById('introView').style.display='block';
+  showLogin.click();
+}
+
+initIdentity();
+
+const titles=[["Portada","Bienvenida al Studio"],["Modo","Crear desde cero o con foto"],["Intención","Qué debe hacer sentir"],["Universo","Dónde viven tus letras"],["Materialidad","De qué están hechas"],["Composición","Cómo conviven en la imagen"],["Dirección visual","Luz, color y acabado"],["Candados","Qué no puede cambiar"],["Prompt final","Resultado listo para usar"]];
+let current=0;
+function renderSteps(){
+  const steps=document.getElementById('steps'); steps.innerHTML='';
+  titles.forEach((t,i)=>{ const d=document.createElement('div'); d.className='step'+(i===current?' active':''); d.innerHTML=`<b>${i+1}. ${t[0]}</b><small>${t[1]}</small>`; d.onclick=()=>go(i); steps.appendChild(d); });
+  document.getElementById('bar').style.width=((current+1)/titles.length*100)+'%';
+  document.getElementById('progressText').textContent=`Paso ${current+1} de ${titles.length}`;
+}
+function go(i){ current=Math.max(0,Math.min(titles.length-1,i)); document.querySelectorAll('#appView .card').forEach((c,n)=>c.classList.toggle('active',n===current)); renderSteps(); window.scrollTo({top:0,behavior:'smooth'}); }
+function next(){go(current+1)} function prev(){go(current-1)}
+renderSteps();
+
+document.querySelectorAll('#locks .choice').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
+function setCreationMode(mode){
+  const input=document.getElementById('creationMode');
+  if(input) input.value=mode;
+  const scratch=document.getElementById('modeScratchCard');
+  const photo=document.getElementById('modePhotoCard');
+  if(scratch) scratch.classList.toggle('active', mode==='scratch');
+  if(photo) photo.classList.toggle('active', mode==='photo');
+  const tip=document.getElementById('creationModeTip');
+  if(tip){
+    tip.innerHTML = mode==='photo'
+      ? '<strong>Modo actual:</strong> Usar una foto. Recuerda que al final deberás llevar el prompt a ChatGPT y subir también tu imagen base.'
+      : '<strong>Modo actual:</strong> Crear desde cero. El Studio construirá un prompt para generar toda la pieza completa.';
+  }
+}
+
+document.querySelectorAll('.choice[data-set]').forEach(chip=>chip.addEventListener('click',()=>{
+  const target=chip.dataset.set;
+  const value=chip.dataset.value || chip.textContent.trim();
+  const setStandard=(id,val)=>{
+    const sel=document.getElementById(id); if(!sel) return;
+    const opt=[...sel.options].find(o=>o.value===val || o.textContent.trim()===val);
+    if(opt){ sel.value=opt.value; }
+    else {
+      sel.value='custom';
+      const custom=document.getElementById(id+'Custom');
+      if(custom){ custom.value=val; custom.style.display='block'; }
+    }
+    sel.dispatchEvent(new Event('change'));
+  };
+  if(target.endsWith('-custom')){
+    const id=target.replace('-custom','');
+    const sel=document.getElementById(id);
+    if(sel){ sel.value='custom'; sel.dispatchEvent(new Event('change')); }
+    const custom=document.getElementById(id+'Custom');
+    if(custom){ custom.value=value; custom.style.display='block'; }
+  } else {
+    setStandard(target, value);
+  }
+}));
+setCreationMode(document.getElementById('creationMode')?.value || 'scratch');
+const customSelects=['emotion','world','material','finish','texture','behavior','camera','placement','depth','palette','lighting','contrast','finalLook','effects'];
+customSelects.forEach(id=>{
+  const sel=document.getElementById(id); const custom=document.getElementById(id+'Custom');
+  if(!sel||!custom) return;
+  const sync=()=>{ custom.style.display=sel.value==='custom'?'block':'none'; };
+  sel.addEventListener('change', sync); sync();
+});
+
+function val(id){ return (document.getElementById(id)?.value || '').trim(); }
+function smartVal(id){ const base=val(id); if(base==='custom') return val(id+'Custom') || '[PERSONALIZADO]'; return base; }
+function activeLocks(){ return [...document.querySelectorAll('#locks .choice.on')].map(x=>x.textContent.trim()) }
+
+function buildPrompt(){
+  const mode=val('creationMode') || 'scratch';
+  const modeLabel = mode==='photo' ? 'Use a photo as base' : 'Create everything from scratch';
+  const main=val('mainText')||'[TEXTO PRINCIPAL]';
+  const sec=val('secondaryText');
+  const world=smartVal('world') || '[UNIVERSO VISUAL]';
+  const mat=val('customMaterial') || [smartVal('material'),smartVal('finish'),smartVal('texture'),smartVal('behavior')].filter(Boolean).join(', ') || '[MATERIAL]';
+  const locks=activeLocks(); if(val('customLocks')) locks.push(val('customLocks'));
+  const prompt=`Create a premium, high-impact thematic lettering composition.
+
+EXACT TEXT
+Main text: "${main}".
+${sec ? `Secondary text: "${sec}".` : 'No secondary text.'}
+
+CREATE MODE
+Mode: ${modeLabel}.
+${mode==='photo' ? 'The user will provide a base photo. Use that photo as the main visual reference, preserve its main subject or scene, and integrate the thematic lettering into the composition without blocking important elements unless requested.' : 'Create the full image from scratch based on the visual direction below.'}
+
+CREATIVE INTENTION
+The composition should communicate: ${smartVal('emotion') || '[EMOTION / INTENTION]'}.
+Purpose: ${val('purpose') || '[PURPOSE]'}.
+
+VISUAL WORLD
+Build the scene inside this visual universe:
+${world}.
+Elements that should be present: ${val('worldElements') || '[KEY ELEMENTS]'}.
+Avoid: ${val('avoidWorld') || '[UNWANTED ELEMENTS]'}.
+
+LETTER MATERIALITY
+The lettering must feel physically real and dimensional.
+Material construction: ${mat}.
+Make the material believable through texture, reflections, volume, surface behavior, edge detail and interaction with light.
+
+COMPOSITION
+Format: ${val('ratio') || '[FORMAT]'}.
+Camera / framing: ${smartVal('camera') || '[CAMERA]'}.
+Placement of lettering: ${smartVal('placement') || '[PLACEMENT]'}.
+Depth structure: ${smartVal('depth') || '[DEPTH]'}.
+Protection rules: ${val('protection') || 'Use available negative space and do not obstruct the main subject unless explicitly requested.'}
+
+COLOR & LIGHT
+Palette: ${smartVal('palette') || '[PALETTE]'}.
+Lighting: ${smartVal('lighting') || '[LIGHTING]'}.
+Contrast: ${smartVal('contrast') || '[CONTRAST]'}.
+Atmospheric effects: ${smartVal('effects') || '[EFFECTS]'}.
+Final visual finish: ${smartVal('finalLook') || 'premium editorial, polished, highly art-directed'}.
+
+CRITICAL TEXT CONTROL
+Spell every word exactly as provided.
+Do not invent, remove, duplicate, merge or replace letters.
+Keep the typography readable and visually intentional.
+The text must remain recognizable even when rendered as a physical 3D object.
+
+LOCKS
+${locks.length ? locks.map(x=>'• '+x).join('\n') : '• Preserve exact wording and legibility.'}
+
+FINAL DIRECTION
+The result must look art-directed, premium, cohesive, visually striking and professionally composed.
+Do not produce a generic font treatment. Build the lettering as an original thematic object that belongs naturally inside the chosen visual world.`;
+
+  const short=`${mode==='photo' ? 'Use the uploaded photo as the base image and add thematic lettering.' : 'Create the full image from scratch.'} Use the exact text "${main}"${sec ? ` and "${sec}"` : ''}. Build the letters from ${mat}, inside ${world}, communicating ${smartVal('emotion')||'the desired emotion'}. Use ${smartVal('lighting')||'intentional lighting'}, ${smartVal('palette')||'a cohesive palette'}, and place the lettering ${smartVal('placement')||'in the most visually balanced available space'}. Keep every word exact, readable and free of invented letters. Final look: ${smartVal('finalLook')||'premium editorial'}.`;
+
+  document.getElementById('masterOutput').textContent=prompt;
+  document.getElementById('shortOutput').textContent=short;
+  document.getElementById('sumConcept').textContent=(mode==='photo' ? 'Con foto base' : 'Desde cero')+' · '+(smartVal('emotion')||'Sin definir')+' · '+world;
+  document.getElementById('sumMaterial').textContent=mat;
+  document.getElementById('sumDirection').textContent=(smartVal('lighting')||'Sin luz')+' · '+(smartVal('finalLook')||'Sin acabado');
+}
+
+async function copyText(id){
+  const text=(document.getElementById(id)?.textContent || '').trim();
+  if(!text){ alert('Primero genera el prompt.'); return; }
+  try{
+    if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); alert('Prompt copiado.'); return; }
+  }catch(e){}
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.setAttribute('readonly',''); ta.style.position='absolute'; ta.style.left='-9999px'; document.body.appendChild(ta);
