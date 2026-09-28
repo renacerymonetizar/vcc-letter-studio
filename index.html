@@ -236,7 +236,74 @@ textarea{min-height:100px; resize:vertical}
   background:rgba(220,90,90,.10);
 }
 
-</style>
+
+/* FINAL LOGIN COVER — preserve artwork clarity */
+#introView{
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  background:#08080b;
+}
+.intro-simple-bg{
+  position:absolute;
+  inset:0;
+  background-image:url("assets/visual-letter-studio.webp");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:cover;
+  filter:none !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+.intro-simple-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,.02) 0%,
+    rgba(0,0,0,.03) 47%,
+    rgba(0,0,0,.20) 64%,
+    rgba(0,0,0,.45) 100%
+  );
+  pointer-events:none;
+}
+.intro-simple-wrap{
+  position:relative;
+  z-index:2;
+  max-width:1600px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:32px 48px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(360px,440px);
+  align-items:center;
+  gap:28px;
+}
+.intro-spacer{min-width:0}
+.intro-simple-title{display:none !important}
+.auth-card-simple{
+  justify-self:end;
+  width:100%;
+  background:rgba(10,10,13,.78);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  box-shadow:0 24px 70px rgba(0,0,0,.34);
+}
+@media (max-width:900px){
+  .intro-simple-wrap{
+    grid-template-columns:1fr;
+    align-items:end;
+    padding:22px;
+  }
+  .intro-spacer{display:none}
+  .auth-card-simple{justify-self:stretch}
+  .intro-simple-bg{background-position:center top}
+  .intro-simple-overlay{
+    background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.18) 50%,rgba(0,0,0,.66) 100%);
+  }
+}
+\n</style>
 </head>
 <body>
 
@@ -245,11 +312,7 @@ textarea{min-height:100px; resize:vertical}
   <div class="intro-simple-bg"></div>
   <div class="intro-simple-overlay"></div>
   <div class="intro-simple-wrap">
-    <div class="intro-simple-title">
-      <h1>Visual Letter Studio™</h1>
-    </div>
-
-    <div class="auth-card auth-card-simple">
+    <div class="intro-spacer" aria-hidden="true"></div>\n\n    <div class="auth-card auth-card-simple">
       <h2>Entrar al Studio</h2>
 
       <div class="tabs">
