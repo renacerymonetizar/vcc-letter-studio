@@ -303,7 +303,126 @@ textarea{min-height:100px; resize:vertical}
     background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.18) 50%,rgba(0,0,0,.66) 100%);
   }
 }
-\n</style>
+\n
+/* APPROVED LOGIN COVER */
+#introView{
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  background:#07070a;
+}
+.intro-simple-bg{
+  position:absolute;
+  inset:0;
+  background-image:url("assets/visual-letter-studio.webp");
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  filter:none !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+.intro-simple-overlay{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.00) 0%,
+      rgba(0,0,0,.02) 45%,
+      rgba(0,0,0,.12) 64%,
+      rgba(0,0,0,.34) 100%
+    );
+  pointer-events:none;
+}
+.intro-simple-wrap{
+  position:relative;
+  z-index:2;
+  max-width:1600px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:42px 68px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(340px,390px);
+  align-items:center;
+  gap:28px;
+}
+.intro-spacer{min-width:0}
+.intro-simple-title{display:none !important}
+.auth-card-simple{
+  justify-self:end;
+  width:100%;
+  padding:26px;
+  border-radius:24px;
+  background:rgba(11,11,14,.82);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 24px 70px rgba(0,0,0,.38);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+}
+.auth-card-simple h2{
+  font-size:30px;
+  margin:0 0 8px;
+}
+.login-subtitle{
+  margin:0 0 20px !important;
+  color:#d8d2c8 !important;
+  font-size:14px;
+  line-height:1.45;
+}
+.auth-card-simple .tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:18px;
+}
+.auth-card-simple .tab{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  padding:12px 10px;
+  border-radius:12px;
+  font-weight:700;
+}
+.auth-card-simple .tab.active{
+  background:linear-gradient(135deg,#f8d88b,#e6ad3f);
+  color:#131313;
+}
+.auth-card-simple input{
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.07);
+  color:white;
+  padding:13px 14px;
+}
+.auth-card-simple .forgot-link{
+  color:#f3d99f;
+  font-size:12px;
+}
+.auth-card-simple .btn-primary{
+  background:linear-gradient(135deg,#f8d88b,#e6ad3f);
+  color:#151515;
+}
+@media(max-width:900px){
+  .intro-simple-wrap{
+    grid-template-columns:1fr;
+    align-items:end;
+    padding:20px;
+  }
+  .intro-spacer{display:none}
+  .auth-card-simple{
+    justify-self:center;
+    width:min(520px,100%);
+  }
+  .intro-simple-bg{
+    background-position:center top;
+  }
+  .intro-simple-overlay{
+    background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.62));
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -314,6 +433,7 @@ textarea{min-height:100px; resize:vertical}
   <div class="intro-simple-wrap">
     <div class="intro-spacer" aria-hidden="true"></div>\n\n    <div class="auth-card auth-card-simple">
       <h2>Entrar al Studio</h2>
+      <p class="login-subtitle">Accede a Visual Letter Studio™.</p>
 
       <div class="tabs">
         <button class="tab active" id="showLogin">Iniciar sesión</button>
