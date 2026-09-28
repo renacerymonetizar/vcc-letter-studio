@@ -720,7 +720,7 @@ function hideResetPane(){
 
 async function initIdentity(){
   try{
-    const mod = await import('@netlify/identity');
+    const mod = await import('https://cdn.jsdelivr.net/npm/@netlify/identity@2.0.0/+esm');
     identityApi = mod;
 
     const callback = await mod.handleAuthCallback();
