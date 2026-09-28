@@ -433,84 +433,241 @@ textarea{min-height:100px; resize:vertical}
     width:min(520px,100%);
   }
 }
+
+/* ===== APPROVED SPLIT LOGIN LAYOUT ===== */
+#introView{
+  min-height:100vh !important;
+  background:#08080b !important;
+  overflow:auto !important;
+}
+#introView .approved-login-shell{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 390px;
+  background:#08080b;
+}
+#introView .approved-art-panel{
+  min-width:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#050507;
+}
+#introView .approved-art-panel img{
+  width:100%;
+  height:100vh;
+  object-fit:contain;
+  object-position:center center;
+  display:block;
+  image-rendering:auto;
+}
+#introView .approved-auth-side{
+  min-height:100vh;
+  border-left:1px solid rgba(255,255,255,.08);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(231,182,83,.08), transparent 28%),
+    linear-gradient(180deg,#101014,#09090c);
+  display:flex;
+  align-items:center;
+  padding:34px 30px;
+}
+#introView .approved-auth-card{
+  width:100%;
+  max-width:330px;
+  margin:auto;
+}
+#introView .approved-eyebrow{
+  font-size:11px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  color:#f8dda0;
+  font-weight:800;
+  margin-bottom:10px;
+}
+#introView .approved-auth-card h1{
+  font-size:34px;
+  line-height:1.05;
+  margin:0 0 8px;
+}
+#introView .approved-subtitle{
+  font-size:14px;
+  line-height:1.5;
+  color:#bdb6aa;
+  margin:0 0 24px;
+}
+#introView .approved-auth-card .tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:18px;
+}
+#introView .approved-auth-card .tab{
+  min-height:44px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:12px;
+  background:#17171d;
+  color:#fff;
+  font-weight:800;
+}
+#introView .approved-auth-card .tab.active{
+  background:linear-gradient(135deg,#f8dda0,#e7b653);
+  color:#151515;
+}
+#introView .approved-auth-card .field{
+  display:grid;
+  gap:7px;
+  margin-bottom:13px;
+}
+#introView .approved-auth-card label{
+  font-size:12px;
+  font-weight:800;
+}
+#introView .approved-auth-card input{
+  width:100%;
+  min-height:46px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:#16161b;
+  color:white;
+  padding:12px 13px;
+  outline:none;
+}
+#introView .approved-auth-card input:focus{
+  border-color:#e7b653;
+  box-shadow:0 0 0 3px rgba(231,182,83,.11);
+}
+#introView .approved-forgot{
+  display:block;
+  margin:-2px 0 20px auto;
+  border:0;
+  background:transparent;
+  color:#efd59c;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+#introView .approved-auth-card .auth-actions{
+  display:block;
+}
+#introView .approved-primary{
+  width:100%;
+  min-height:48px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f8dda0,#e7b653);
+  color:#151515;
+  font-weight:900;
+}
+#introView .approved-register-note{
+  margin-top:16px;
+  text-align:center;
+  color:#bdb6aa;
+  font-size:12px;
+}
+#introView .approved-register-note strong{color:#fff}
+#introView .auth-message{
+  margin:14px 0;
+}
+@media(max-width:900px){
+  #introView .approved-login-shell{grid-template-columns:1fr}
+  #introView .approved-art-panel{min-height:auto}
+  #introView .approved-art-panel img{
+    width:100%;
+    height:auto;
+    object-fit:contain;
+  }
+  #introView .approved-auth-side{
+    min-height:auto;
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.10);
+    padding:28px 20px;
+  }
+  #introView .approved-auth-card{max-width:520px}
+}
+
 </style>
 </head>
 <body>
 
 
 <section id="introView">
-  <div class="intro-simple-bg"></div>
-  <div class="intro-simple-overlay"></div>
-  <div class="intro-simple-wrap">
-    <div class="intro-spacer" aria-hidden="true"></div>\n\n    <div class="auth-card auth-card-simple">
-      <h2>Entrar al Studio</h2>
-      <p class="login-subtitle">Accede a Visual Letter Studio™.</p>
+  <div class="approved-login-shell">
+    <section class="approved-art-panel">
+      <img src="assets/visual-letter-studio.webp" alt="Visual Letter Studio">
+    </section>
 
-      <div class="tabs">
-        <button class="tab active" id="showLogin">Iniciar sesión</button>
-        <button class="tab" id="showRegister">Registrarse</button>
-      </div>
+    <aside class="approved-auth-side">
+      <div class="approved-auth-card">
+        <div class="approved-eyebrow">Visual Letter Studio™</div>
+        <h1>Entrar al Studio</h1>
+        <p class="approved-subtitle">Accede a tu espacio creativo.</p>
 
-      <div id="loginPane">
-        <div class="form">
-          <div class="field">
-            <label>Correo</label>
-            <input type="email" id="loginEmail" placeholder="tuemail@ejemplo.com">
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input type="password" id="loginPassword" placeholder="********">
-          </div>
-          <div style="display:flex;justify-content:flex-end;margin-top:-4px">
-            <button type="button" class="forgot-link" id="forgotPasswordBtn">Olvidé mi contraseña</button>
-          </div>
-          <div class="auth-actions">
-            <button class="btn btn-primary" id="loginBtn">Entrar al Studio</button>
+        <div class="tabs">
+          <button class="tab active" id="showLogin">Iniciar sesión</button>
+          <button class="tab" id="showRegister">Registrarse</button>
+        </div>
+
+        <div id="loginPane">
+          <div class="form">
+            <div class="field">
+              <label>Correo</label>
+              <input type="email" id="loginEmail" placeholder="tuemail@ejemplo.com">
+            </div>
+            <div class="field">
+              <label>Contraseña</label>
+              <input type="password" id="loginPassword" placeholder="********">
+            </div>
+            <button type="button" class="forgot-link approved-forgot" id="forgotPasswordBtn">Olvidé mi contraseña</button>
+            <div class="auth-actions">
+              <button class="btn btn-primary approved-primary" id="loginBtn">Entrar al Studio</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="authMessage" class="auth-message" style="display:none" role="status" aria-live="polite"></div>
+        <div id="authMessage" class="auth-message" style="display:none" role="status" aria-live="polite"></div>
 
-      <div id="registerPane" class="hidden">
-        <div class="form">
-          <div class="field">
-            <label>Nombre</label>
-            <input type="text" id="registerName" placeholder="Tu nombre">
-          </div>
-          <div class="field">
-            <label>Correo</label>
-            <input type="email" id="registerEmail" placeholder="tuemail@ejemplo.com">
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input type="password" id="registerPassword" placeholder="Crea una contraseña">
-          </div>
-          <div class="auth-actions">
-            <button class="btn btn-primary" id="registerBtn">Crear cuenta</button>
+        <div id="registerPane" class="hidden">
+          <div class="form">
+            <div class="field">
+              <label>Nombre</label>
+              <input type="text" id="registerName" placeholder="Tu nombre">
+            </div>
+            <div class="field">
+              <label>Correo</label>
+              <input type="email" id="registerEmail" placeholder="tuemail@ejemplo.com">
+            </div>
+            <div class="field">
+              <label>Contraseña</label>
+              <input type="password" id="registerPassword" placeholder="Crea una contraseña">
+            </div>
+            <div class="auth-actions">
+              <button class="btn btn-primary approved-primary" id="registerBtn">Crear cuenta</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="resetPane" class="hidden">
-        <div class="form">
-          <div class="field">
-            <label>Nueva contraseña</label>
-            <input type="password" id="newPassword" placeholder="Mínimo 8 caracteres">
-          </div>
-          <div class="field">
-            <label>Confirma tu nueva contraseña</label>
-            <input type="password" id="confirmNewPassword" placeholder="Repite la contraseña">
-          </div>
-          <div class="auth-actions">
-            <button class="btn btn-primary" id="resetPasswordBtn">Guardar nueva contraseña</button>
+        <div id="resetPane" class="hidden">
+          <div class="form">
+            <div class="field">
+              <label>Nueva contraseña</label>
+              <input type="password" id="newPassword" placeholder="Mínimo 8 caracteres">
+            </div>
+            <div class="field">
+              <label>Confirma tu nueva contraseña</label>
+              <input type="password" id="confirmNewPassword" placeholder="Repite la contraseña">
+            </div>
+            <div class="auth-actions">
+              <button class="btn btn-primary approved-primary" id="resetPasswordBtn">Guardar nueva contraseña</button>
+            </div>
           </div>
         </div>
+
+        <div class="approved-register-note">¿Primera vez aquí? <strong>Regístrate.</strong></div>
       </div>
-    </div>
+    </aside>
   </div>
 </section>
-
 
 <section id="appView">
   <div class="wrap">
