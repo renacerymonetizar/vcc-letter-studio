@@ -587,6 +587,7 @@ textarea{min-height:100px; resize:vertical}
 }
 
 </style>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
@@ -1040,56 +1041,77 @@ textarea{min-height:100px; resize:vertical}
   </div>
 </section>
 
-<script type="module">
+<script>
 
-// --- NETLIFY IDENTITY REAL AUTH ---
-let identityApi = null;
-let recoveryMode = false;
+// --- NETLIFY IDENTITY AUTH ---
+let identityReady = false;
 
 function showAuthMessage(message, type='info'){
-  const box = document.getElementById('authMessage');
+  const box=document.getElementById('authMessage');
   if(!box) return;
-  box.textContent = message || '';
-  box.style.display = message ? 'block' : 'none';
-  box.dataset.type = type;
+  box.textContent=message || '';
+  box.style.display=message ? 'block' : 'none';
+  box.dataset.type=type;
 }
 
 function showResetPane(){
-  recoveryMode = true;
   document.getElementById('loginPane')?.classList.add('hidden');
   document.getElementById('registerPane')?.classList.add('hidden');
   document.getElementById('resetPane')?.classList.remove('hidden');
   document.getElementById('showLogin')?.classList.remove('active');
   document.getElementById('showRegister')?.classList.remove('active');
-  showAuthMessage('Crea tu nueva contraseña para completar la recuperación.', 'info');
+  showAuthMessage('Crea tu nueva contraseña.', 'info');
 }
 
 function hideResetPane(){
-  recoveryMode = false;
   document.getElementById('resetPane')?.classList.add('hidden');
 }
 
-async function initIdentity(){
-  try{
-    const mod = await import('https://cdn.jsdelivr.net/npm/@netlify/identity@2.0.0/+esm');
-    identityApi = mod;
+function enterStudio(){
+  document.getElementById('introView').style.display='none';
+  document.getElementById('appView').style.display='block';
+}
 
-    const callback = await mod.handleAuthCallback();
-    if(callback?.type === 'recovery'){
-      showResetPane();
-      return;
-    }
+function returnToLogin(){
+  document.getElementById('appView').style.display='none';
+  document.getElementById('introView').style.display='block';
+}
 
-    const user = await mod.getUser();
-    if(user){
-      enterStudio();
-    }
-  }catch(err){
-    console.error('Identity init error', err);
-    showAuthMessage(
-      'El acceso real se activa cuando esta web esté publicada en Netlify con Identity habilitado.',
-      'info'
-    );
+function initIdentity(){
+  if(!window.netlifyIdentity){
+    showAuthMessage('No se pudo cargar el sistema de acceso. Recarga la página.', 'error');
+    return;
+  }
+
+  netlifyIdentity.init({ locale:'es' });
+
+  netlifyIdentity.on('init', user=>{
+    identityReady=true;
+    if(user) enterStudio();
+  });
+
+  netlifyIdentity.on('login', user=>{
+    identityReady=true;
+    showAuthMessage('');
+    enterStudio();
+  });
+
+  netlifyIdentity.on('logout', ()=>{
+    returnToLogin();
+  });
+
+  netlifyIdentity.on('error', err=>{
+    console.error('Identity error', err);
+    showAuthMessage(err?.message || 'Ocurrió un error con el acceso.', 'error');
+  });
+
+  netlifyIdentity.on('recovery', ()=>{
+    showResetPane();
+  });
+
+  const hash=window.location.hash || '';
+  if(hash.includes('recovery_token=')){
+    showResetPane();
   }
 }
 
@@ -1117,7 +1139,6 @@ showRegister.onclick=()=>{
 };
 
 document.getElementById('registerBtn').onclick=async()=>{
-  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
   const name=document.getElementById('registerName').value.trim();
   const email=document.getElementById('registerEmail').value.trim().toLowerCase();
   const password=document.getElementById('registerPassword').value.trim();
@@ -1125,95 +1146,99 @@ document.getElementById('registerBtn').onclick=async()=>{
   if(!name || !email || !password){
     return showAuthMessage('Completa nombre, correo y contraseña.', 'error');
   }
+  if(password.length<6){
+    return showAuthMessage('La contraseña debe tener al menos 6 caracteres.', 'error');
+  }
+  if(!window.netlifyIdentity){
+    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
+  }
 
+  showAuthMessage('Creando tu cuenta...', 'info');
   try{
-    await identityApi.signup(email, password, { full_name:name });
-    showAuthMessage(
-      'Registro creado. Revisa tu correo y confirma tu cuenta para poder entrar al Studio.',
-      'success'
-    );
-    showLogin.click();
+    await netlifyIdentity.gotrue.signup(email, password, { full_name:name });
+    showAuthMessage('Cuenta creada. Revisa tu correo para confirmar tu registro y luego inicia sesión.', 'success');
     document.getElementById('loginEmail').value=email;
+    showLogin.click();
   }catch(err){
-    showAuthMessage(err?.message || 'No se pudo completar el registro.', 'error');
+    console.error(err);
+    showAuthMessage(err?.json?.msg || err?.message || 'No se pudo crear la cuenta.', 'error');
   }
 };
 
 document.getElementById('loginBtn').onclick=async()=>{
-  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
   const email=document.getElementById('loginEmail').value.trim().toLowerCase();
   const password=document.getElementById('loginPassword').value.trim();
 
   if(!email || !password){
     return showAuthMessage('Escribe tu correo y contraseña.', 'error');
   }
+  if(!window.netlifyIdentity){
+    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
+  }
 
+  showAuthMessage('Entrando...', 'info');
   try{
-    await identityApi.login(email, password);
+    const user=await netlifyIdentity.gotrue.login(email, password, true);
     showAuthMessage('');
     enterStudio();
   }catch(err){
-    showAuthMessage(err?.message || 'Correo o contraseña incorrectos.', 'error');
+    console.error(err);
+    showAuthMessage(err?.json?.error_description || err?.json?.msg || err?.message || 'No se pudo iniciar sesión.', 'error');
   }
 };
 
 document.getElementById('forgotPasswordBtn').onclick=async()=>{
-  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
-  let email=(document.getElementById('loginEmail').value || '').trim().toLowerCase();
-
+  let email=document.getElementById('loginEmail').value.trim().toLowerCase();
   if(!email){
     email=(window.prompt('Escribe el correo de tu cuenta:','') || '').trim().toLowerCase();
   }
   if(!email) return;
+  if(!window.netlifyIdentity){
+    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
+  }
 
   try{
-    await identityApi.requestPasswordRecovery(email);
-    showAuthMessage(
-      'Te enviamos un enlace de recuperación. Revisa tu correo y vuelve al Studio desde ese enlace.',
-      'success'
-    );
+    await netlifyIdentity.gotrue.requestPasswordRecovery(email);
+    showAuthMessage('Te enviamos un enlace de recuperación a tu correo.', 'success');
   }catch(err){
-    showAuthMessage(err?.message || 'No se pudo enviar el correo de recuperación.', 'error');
+    console.error(err);
+    showAuthMessage(err?.json?.msg || err?.message || 'No se pudo enviar el correo de recuperación.', 'error');
   }
 };
 
 const resetPasswordBtn=document.getElementById('resetPasswordBtn');
-if(resetPasswordBtn) resetPasswordBtn.onclick=async()=>{
-  if(!identityApi) return showAuthMessage('El sistema de acceso todavía se está cargando.', 'error');
-  const pass=document.getElementById('newPassword').value.trim();
-  const pass2=document.getElementById('confirmNewPassword').value.trim();
+if(resetPasswordBtn){
+  resetPasswordBtn.onclick=async()=>{
+    const pass=document.getElementById('newPassword').value.trim();
+    const pass2=document.getElementById('confirmNewPassword').value.trim();
+    if(!pass || pass.length<6){
+      return showAuthMessage('La contraseña debe tener al menos 6 caracteres.', 'error');
+    }
+    if(pass!==pass2){
+      return showAuthMessage('Las contraseñas no coinciden.', 'error');
+    }
 
-  if(!pass || pass.length < 8){
-    return showAuthMessage('La nueva contraseña debe tener al menos 8 caracteres.', 'error');
-  }
-  if(pass !== pass2){
-    return showAuthMessage('Las dos contraseñas no coinciden.', 'error');
-  }
-
-  try{
-    await identityApi.updateUser({ password:pass });
-    showAuthMessage('Contraseña actualizada. Ya puedes entrar al Studio.', 'success');
-    hideResetPane();
-    enterStudio();
-  }catch(err){
-    showAuthMessage(err?.message || 'No se pudo actualizar la contraseña.', 'error');
-  }
-};
-
-function enterStudio(){
-  document.getElementById('introView').style.display='none';
-  document.getElementById('appView').style.display='block';
+    try{
+      const user=netlifyIdentity.currentUser();
+      if(!user) throw new Error('No se encontró una sesión de recuperación activa.');
+      await user.update({ password:pass });
+      showAuthMessage('Contraseña actualizada.', 'success');
+      hideResetPane();
+      enterStudio();
+    }catch(err){
+      console.error(err);
+      showAuthMessage(err?.message || 'No se pudo actualizar la contraseña.', 'error');
+    }
+  };
 }
 
 async function logout(){
   try{
-    if(identityApi) await identityApi.logout();
+    if(window.netlifyIdentity) await netlifyIdentity.logout();
   }catch(err){
     console.error(err);
   }
-  document.getElementById('appView').style.display='none';
-  document.getElementById('introView').style.display='block';
-  showLogin.click();
+  returnToLogin();
 }
 
 initIdentity();
