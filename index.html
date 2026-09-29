@@ -62,12 +62,12 @@
         <p>Diseña tu concepto. Construye tus letras. Genera tu prompt. La herramienta es la formación: la alumna aprende mientras decide y el sistema traduce todo a un prompt profesional listo para ChatGPT.</p>
       </div>
       <div class="top-actions">
-        <button class="btn btn-secondary" onclick="quickPreset('luxury')">Preset lujo</button>
-        <button class="btn btn-secondary" onclick="quickPreset('tulum')">Preset Tulum</button>
-        <button class="btn btn-secondary" onclick="quickPreset('neon')">Preset neón</button>
-        <button class="btn btn-secondary" onclick="saveProject()">Guardar</button>
-        <button class="btn btn-secondary" onclick="loadProject()">Recuperar</button>
-        <button class="btn btn-primary" onclick="logout()">Salir</button>
+        <button class="btn btn-secondary" data-action="preset-luxury">Preset lujo</button>
+        <button class="btn btn-secondary" data-action="preset-tulum">Preset Tulum</button>
+        <button class="btn btn-secondary" data-action="preset-neon">Preset neón</button>
+        <button class="btn btn-secondary" data-action="save-project">Guardar</button>
+        <button class="btn btn-secondary" data-action="load-project">Recuperar</button>
+        <button class="btn btn-primary" data-action="logout">Salir</button>
       </div>
     </div>
 
@@ -99,12 +99,12 @@
                 <li><strong>Genera tu prompt</strong> y llévalo a ChatGPT para crear la imagen.</li>
               </ul>
               <div class="cover-actions">
-                <button class="btn btn-primary" onclick="next()">Empezar el recorrido</button>
-                <button class="btn btn-secondary" onclick="go(8)">Ir al prompt final</button>
+                <button class="btn btn-primary" data-action="next">Empezar el recorrido</button>
+                <button class="btn btn-secondary" data-action="go-final">Ir al prompt final</button>
               </div>
             </div>
           </div>
-          <div class="nav"><span></span><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><span></span><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -113,12 +113,12 @@
             <div class="box">
               <h3>Selecciona cómo vas a trabajar</h3>
               <div class="mode-grid">
-                <div class="mode-card active" id="modeScratchCard" onclick="setCreationMode('scratch')">
+                <div class="mode-card active" id="modeScratchCard" data-action="mode-scratch">
                   <span class="mode-badge">CREAR DESDE CERO</span>
                   <h4>Construir toda la imagen</h4>
                   <p>Ideal si quieres que ChatGPT genere toda la escena completa: el universo visual, las letras, la composición y el ambiente desde cero.</p>
                 </div>
-                <div class="mode-card" id="modePhotoCard" onclick="setCreationMode('photo')">
+                <div class="mode-card" id="modePhotoCard" data-action="mode-photo">
                   <span class="mode-badge">USAR UNA FOTO</span>
                   <h4>Trabajar sobre una imagen base</h4>
                   <p>Ideal si ya tienes una foto y quieres agregarle lettering temático. El prompt final te recordará que debes subir la imagen junto con el prompt en ChatGPT.</p>
@@ -137,7 +137,7 @@
               <div class="tip">Esto les da claridad a las muchachas desde el principio: pueden entrar a crear una imagen completa o mejorar una foto que ya tengan.</div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -168,7 +168,7 @@
               </div>
             </div>
           </div>
-          <div class="nav"><span></span><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><span></span><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -217,7 +217,7 @@
               </div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -285,7 +285,7 @@
               </div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -321,7 +321,7 @@
               </div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -369,7 +369,7 @@
               </div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="next()">Continuar</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="next">Continuar</button></div>
         </section>
 
         <section class="card">
@@ -392,7 +392,7 @@
               <div class="field" style="margin-top:14px"><label>Candados personalizados</label><textarea id="customLocks" placeholder="Escribe restricciones adicionales"></textarea></div>
             </div>
           </div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="buildPrompt(); next()">Generar mi prompt</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="build-next">Generar mi prompt</button></div>
         </section>
 
         <section class="card">
@@ -406,16 +406,16 @@
           <h3>Prompt maestro</h3>
           <div id="masterOutput" class="output"></div>
           <div class="row">
-            <button class="btn btn-primary" onclick="copyText('masterOutput')">Copiar prompt</button>
-            <button class="btn btn-secondary" onclick="buildPrompt()">Regenerar</button>
-            <button class="btn btn-secondary" onclick="downloadPrompt()">Descargar .txt</button>
+            <button class="btn btn-primary" data-action="copy-master">Copiar prompt</button>
+            <button class="btn btn-secondary" data-action="build-prompt">Regenerar</button>
+            <button class="btn btn-secondary" data-action="download-prompt">Descargar .txt</button>
           </div>
           <div style="height:20px"></div>
           <h3>Prompt corto</h3>
           <div id="shortOutput" class="output" style="min-height:110px"></div>
-          <div class="row"><button class="btn btn-primary" onclick="copyText('shortOutput')">Copiar versión corta</button></div>
+          <div class="row"><button class="btn btn-primary" data-action="copy-short">Copiar versión corta</button></div>
           <div class="tip">Pega tu prompt en ChatGPT y, si algo no queda bien, corrige una sola variable a la vez: material, ubicación, iluminación o relación con el sujeto.</div>
-          <div class="nav"><button class="btn btn-secondary" onclick="prev()">Atrás</button><button class="btn btn-primary" onclick="resetAll()">Crear otra composición</button></div>
+          <div class="nav"><button class="btn btn-secondary" data-action="prev">Atrás</button><button class="btn btn-primary" data-action="reset-all">Crear otra composición</button></div>
         </section>
 
         <div class="footer">VISUAL LETTER STUDIO™ · Laboratorio interactivo de letras temáticas · Prototipo con slides de entrada + constructor guiado.</div>
