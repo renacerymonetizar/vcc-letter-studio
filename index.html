@@ -1043,28 +1043,13 @@ textarea{min-height:100px; resize:vertical}
 
 <script>
 
-// --- NETLIFY IDENTITY AUTH ---
-let identityReady = false;
-
+// --- NETLIFY IDENTITY OFFICIAL FLOW ---
 function showAuthMessage(message, type='info'){
   const box=document.getElementById('authMessage');
   if(!box) return;
   box.textContent=message || '';
   box.style.display=message ? 'block' : 'none';
   box.dataset.type=type;
-}
-
-function showResetPane(){
-  document.getElementById('loginPane')?.classList.add('hidden');
-  document.getElementById('registerPane')?.classList.add('hidden');
-  document.getElementById('resetPane')?.classList.remove('hidden');
-  document.getElementById('showLogin')?.classList.remove('active');
-  document.getElementById('showRegister')?.classList.remove('active');
-  showAuthMessage('Crea tu nueva contraseña.', 'info');
-}
-
-function hideResetPane(){
-  document.getElementById('resetPane')?.classList.add('hidden');
 }
 
 function enterStudio(){
@@ -1077,23 +1062,29 @@ function returnToLogin(){
   document.getElementById('introView').style.display='block';
 }
 
-function initIdentity(){
+function openIdentity(mode){
   if(!window.netlifyIdentity){
-    showAuthMessage('No se pudo cargar el sistema de acceso. Recarga la página.', 'error');
+    showAuthMessage('El sistema de acceso aún no terminó de cargar. Recarga la página.', 'error');
     return;
   }
+  netlifyIdentity.open(mode);
+}
 
+if(window.netlifyIdentity){
   netlifyIdentity.init({ locale:'es' });
 
   netlifyIdentity.on('init', user=>{
-    identityReady=true;
     if(user) enterStudio();
   });
 
   netlifyIdentity.on('login', user=>{
-    identityReady=true;
+    netlifyIdentity.close();
     showAuthMessage('');
     enterStudio();
+  });
+
+  netlifyIdentity.on('signup', user=>{
+    showAuthMessage('Registro creado. Revisa tu correo para confirmar tu cuenta.', 'success');
   });
 
   netlifyIdentity.on('logout', ()=>{
@@ -1101,18 +1092,11 @@ function initIdentity(){
   });
 
   netlifyIdentity.on('error', err=>{
-    console.error('Identity error', err);
-    showAuthMessage(err?.message || 'Ocurrió un error con el acceso.', 'error');
+    console.error('Netlify Identity:', err);
+    showAuthMessage(err?.message || 'No se pudo completar el acceso.', 'error');
   });
-
-  netlifyIdentity.on('recovery', ()=>{
-    showResetPane();
-  });
-
-  const hash=window.location.hash || '';
-  if(hash.includes('recovery_token=')){
-    showResetPane();
-  }
+}else{
+  showAuthMessage('No se pudo cargar Netlify Identity. Recarga la página.', 'error');
 }
 
 const showLogin=document.getElementById('showLogin');
@@ -1121,127 +1105,37 @@ const loginPane=document.getElementById('loginPane');
 const registerPane=document.getElementById('registerPane');
 
 showLogin.onclick=()=>{
-  hideResetPane();
   showLogin.classList.add('active');
   showRegister.classList.remove('active');
   loginPane.classList.remove('hidden');
   registerPane.classList.add('hidden');
-  showAuthMessage('');
+  openIdentity('login');
 };
 
 showRegister.onclick=()=>{
-  hideResetPane();
   showRegister.classList.add('active');
   showLogin.classList.remove('active');
   registerPane.classList.remove('hidden');
   loginPane.classList.add('hidden');
-  showAuthMessage('');
+  const name=document.getElementById('registerName')?.value?.trim() || '';
+  openIdentity('signup');
 };
 
-document.getElementById('registerBtn').onclick=async()=>{
-  const name=document.getElementById('registerName').value.trim();
-  const email=document.getElementById('registerEmail').value.trim().toLowerCase();
-  const password=document.getElementById('registerPassword').value.trim();
-
-  if(!name || !email || !password){
-    return showAuthMessage('Completa nombre, correo y contraseña.', 'error');
-  }
-  if(password.length<6){
-    return showAuthMessage('La contraseña debe tener al menos 6 caracteres.', 'error');
-  }
-  if(!window.netlifyIdentity){
-    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
-  }
-
-  showAuthMessage('Creando tu cuenta...', 'info');
-  try{
-    await netlifyIdentity.gotrue.signup(email, password, { full_name:name });
-    showAuthMessage('Cuenta creada. Revisa tu correo para confirmar tu registro y luego inicia sesión.', 'success');
-    document.getElementById('loginEmail').value=email;
-    showLogin.click();
-  }catch(err){
-    console.error(err);
-    showAuthMessage(err?.json?.msg || err?.message || 'No se pudo crear la cuenta.', 'error');
-  }
-};
-
-document.getElementById('loginBtn').onclick=async()=>{
-  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
-  const password=document.getElementById('loginPassword').value.trim();
-
-  if(!email || !password){
-    return showAuthMessage('Escribe tu correo y contraseña.', 'error');
-  }
-  if(!window.netlifyIdentity){
-    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
-  }
-
-  showAuthMessage('Entrando...', 'info');
-  try{
-    const user=await netlifyIdentity.gotrue.login(email, password, true);
-    showAuthMessage('');
-    enterStudio();
-  }catch(err){
-    console.error(err);
-    showAuthMessage(err?.json?.error_description || err?.json?.msg || err?.message || 'No se pudo iniciar sesión.', 'error');
-  }
-};
-
-document.getElementById('forgotPasswordBtn').onclick=async()=>{
-  let email=document.getElementById('loginEmail').value.trim().toLowerCase();
-  if(!email){
-    email=(window.prompt('Escribe el correo de tu cuenta:','') || '').trim().toLowerCase();
-  }
-  if(!email) return;
-  if(!window.netlifyIdentity){
-    return showAuthMessage('El sistema de acceso todavía no está disponible.', 'error');
-  }
-
-  try{
-    await netlifyIdentity.gotrue.requestPasswordRecovery(email);
-    showAuthMessage('Te enviamos un enlace de recuperación a tu correo.', 'success');
-  }catch(err){
-    console.error(err);
-    showAuthMessage(err?.json?.msg || err?.message || 'No se pudo enviar el correo de recuperación.', 'error');
-  }
-};
+document.getElementById('loginBtn').onclick=()=>openIdentity('login');
+document.getElementById('registerBtn').onclick=()=>openIdentity('signup');
+document.getElementById('forgotPasswordBtn').onclick=()=>openIdentity('login');
 
 const resetPasswordBtn=document.getElementById('resetPasswordBtn');
 if(resetPasswordBtn){
-  resetPasswordBtn.onclick=async()=>{
-    const pass=document.getElementById('newPassword').value.trim();
-    const pass2=document.getElementById('confirmNewPassword').value.trim();
-    if(!pass || pass.length<6){
-      return showAuthMessage('La contraseña debe tener al menos 6 caracteres.', 'error');
-    }
-    if(pass!==pass2){
-      return showAuthMessage('Las contraseñas no coinciden.', 'error');
-    }
-
-    try{
-      const user=netlifyIdentity.currentUser();
-      if(!user) throw new Error('No se encontró una sesión de recuperación activa.');
-      await user.update({ password:pass });
-      showAuthMessage('Contraseña actualizada.', 'success');
-      hideResetPane();
-      enterStudio();
-    }catch(err){
-      console.error(err);
-      showAuthMessage(err?.message || 'No se pudo actualizar la contraseña.', 'error');
-    }
-  };
+  resetPasswordBtn.onclick=()=>openIdentity('login');
 }
 
 async function logout(){
   try{
     if(window.netlifyIdentity) await netlifyIdentity.logout();
-  }catch(err){
-    console.error(err);
-  }
+  }catch(err){ console.error(err); }
   returnToLogin();
 }
-
-initIdentity();
 
 const titles=[["Portada","Bienvenida al Studio"],["Modo","Crear desde cero o con foto"],["Intención","Qué debe hacer sentir"],["Universo","Dónde viven tus letras"],["Materialidad","De qué están hechas"],["Composición","Cómo conviven en la imagen"],["Dirección visual","Luz, color y acabado"],["Candados","Qué no puede cambiar"],["Prompt final","Resultado listo para usar"]];
 let current=0;
