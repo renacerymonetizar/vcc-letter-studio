@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p dist/assets && cp index.html dist/index.html && cp -r assets/. dist/assets/"
+    "build": "node build.mjs"
   }
 }
