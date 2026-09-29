@@ -236,3 +236,36 @@ function quickPreset(type){
   customSelects.forEach(id=>{ const s=document.getElementById(id), c=document.getElementById(id+'Custom'); if(s&&c) c.style.display=s.value==='custom'?'block':'none'; });
   buildPrompt(); go(8);
 }
+
+
+// ROBUST DASHBOARD BUTTON BINDINGS — no inline onclick dependency
+(function bindDashboardActions(){
+  const root=document.getElementById('appView');
+  if(!root) return;
+
+  root.addEventListener('click', (event)=>{
+    const el=event.target.closest('[data-action]');
+    if(!el) return;
+    const action=el.dataset.action;
+
+    switch(action){
+      case 'preset-luxury': quickPreset('luxury'); break;
+      case 'preset-tulum': quickPreset('tulum'); break;
+      case 'preset-neon': quickPreset('neon'); break;
+      case 'save-project': saveProject(); break;
+      case 'load-project': loadProject(); break;
+      case 'logout': logout(); break;
+      case 'next': next(); break;
+      case 'prev': prev(); break;
+      case 'go-final': go(8); break;
+      case 'mode-scratch': setCreationMode('scratch'); break;
+      case 'mode-photo': setCreationMode('photo'); break;
+      case 'build-next': buildPrompt(); next(); break;
+      case 'copy-master': copyText('masterOutput'); break;
+      case 'build-prompt': buildPrompt(); break;
+      case 'download-prompt': downloadPrompt(); break;
+      case 'copy-short': copyText('shortOutput'); break;
+      case 'reset-all': resetAll(); break;
+    }
+  });
+})();
